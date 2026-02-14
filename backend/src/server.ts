@@ -5,37 +5,39 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import connectDB from './config/database';
-import cricketRoutes from './routes/cricketRoutes';
 import { errorHandler, notFound } from './middleware/errorHandler';
 
-// Load env vars
 dotenv.config();
 
-// Import routes
 import authRoutes from './routes/authRoutes';
 import moodRoutes from './routes/moodRoutes';
 import contentRoutes from './routes/contentRoutes';
 import vaultRoutes from './routes/vaultRoutes';
-import pollRoutes from './routes/pollRoutes';
+import cricketRoutes from './routes/cricketRoutes';
+import musicRoutes from './routes/musicRoutes';
+import trendingRoutes from './routes/trendingRoutes';
+import wallpapersRoutes from './routes/wallpapersRoutes';
+import quotesRoutes from './routes/quotesRoutes';
+import challengeRoutes from './routes/challengeRoutes';
+import pollsRoutes from './routes/pollsRoutes';
+import astroRoutes from './routes/astroRoutes';
+import fashionRoutes from './routes/fashionRoutes';
 
 const app: Application = express();
 
-// Connect to database
 connectDB();
 
-// Security middleware
 app.use(helmet());
 
-// Rate limiting
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.',
+  windowMs: 15 * 60 * 1000,
+  max: process.env.NODE_ENV === 'production' ? 100 : 10000,
 });
 
-app.use('/api/', limiter);
+if (process.env.NODE_ENV === 'production') {
+  app.use('/api/', limiter);
+}
 
-// CORS
 const corsOptions = {
   origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true,
@@ -43,23 +45,24 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-
-// Body parser
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
-// Cookie parser
 app.use(cookieParser());
 
-// API Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/mood', moodRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/vault', vaultRoutes);
-app.use('/api/polls', pollRoutes);
 app.use('/api/cricket', cricketRoutes);
+app.use('/api/music', musicRoutes);
+app.use('/api/trending', trendingRoutes);
+app.use('/api/wallpapers', wallpapersRoutes);
+app.use('/api/quotes', quotesRoutes);
+app.use('/api/challenge', challengeRoutes);
+app.use('/api/polls', pollsRoutes);
+app.use('/api/astro', astroRoutes);
+app.use('/api/fashion', fashionRoutes);
 
-// Health check
 app.get('/api/health', (req, res) => {
   res.status(200).json({
     success: true,
@@ -68,7 +71,6 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Error handling
 app.use(notFound);
 app.use(errorHandler);
 
