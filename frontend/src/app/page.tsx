@@ -3,11 +3,6 @@
 import { motion } from 'framer-motion';
 import { Sparkles, Zap, Heart, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
-
-const ThreeBackground = dynamic(() => import('@/components/ThreeBackground'), {
-  ssr: false,
-});
 
 const features = [
   {
@@ -39,8 +34,6 @@ const features = [
 export default function Home() {
   return (
     <div className="relative">
-      <ThreeBackground />
-      
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-4 relative">
         <div className="max-w-6xl mx-auto text-center">
@@ -50,14 +43,14 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-6xl md:text-8xl font-heading font-black mb-6">
-              <span className="gradient-text">EMORA</span>
+              <span className="gradient-text">Emora</span>
             </h1>
             <p className="text-xl md:text-2xl text-white/80 mb-4 font-medium">
               Your AI-Powered Social Universe
             </p>
             <p className="text-base md:text-lg text-white/60 max-w-2xl mx-auto mb-12">
               Experience the next generation of social entertainment with mood detection,
-              AI-generated content, and immersive 3D experiences
+              AI-generated content
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

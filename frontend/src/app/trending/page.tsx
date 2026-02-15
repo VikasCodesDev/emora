@@ -24,8 +24,9 @@ export default function TrendingPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-5xl font-heading font-bold glow-text mb-8">Trending News</h1>
-      <div className="flex gap-3 mb-8 flex-wrap">
+      <h1 className="text-5xl font-heading font-bold glow-text mb-4 text-center">Trending News</h1>
+      <p className="text-white/60 text-center">What the world is talking about right now</p>
+      <div className="flex justify-center gap-3 mt-8 mb-8 flex-wrap">
         {['general', 'technology', 'entertainment', 'sports', 'business'].map((cat) => (
           <button
             key={cat}

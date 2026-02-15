@@ -47,8 +47,9 @@ export default function WallpapersPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-5xl font-heading font-bold glow-text mb-8">Wallpapers</h1>
-      <div className="flex gap-3 mb-8 flex-wrap">
+      <h1 className="text-5xl font-heading font-bold glow-text mb-4 text-center">Wallpapers</h1>
+      <p className="text-white/60 text-center">Visuals that transform your device into art</p>
+      <div className="flex justify-center gap-3 mt-8 mb-8 flex-wrap">
         {['nature', 'abstract', 'minimal', 'space', 'city', 'anime'].map((cat) => (
           <button
             key={cat}

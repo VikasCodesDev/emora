@@ -68,9 +68,10 @@ export default function QuotesPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-5xl font-heading font-bold glow-text mb-8">Daily Quotes</h1>
+      <h1 className="text-5xl font-heading font-bold glow-text mb-4 text-center">Daily Quotes</h1>
+      <p className="text-white/60 text-center">Quotes that resonate with your vibe</p>
 
-      <div className="flex gap-3 mb-8 flex-wrap">
+      <div className="flex gap-3 justify-center mt-8 mb-8 flex-wrap">
         {['motivational', 'life', 'success', 'work'].map((cat) => (
           <button
             key={cat}

@@ -57,9 +57,10 @@ export default function FashionPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-5xl font-heading font-bold glow-text mb-8">Fashion Hub</h1>
+      <h1 className="text-5xl font-heading font-bold glow-text mb-4 text-center">Fashion Hub</h1>
+      <p className="text-white/60 text-center">Explore trending looks, aesthetics, and your next style upgrade</p>
 
-      <div className="glass-strong p-6 rounded-xl mb-8">
+      <div className="glass-strong p-6 rounded-xl mt-6 mb-8">
         <h2 className="text-2xl font-heading font-bold mb-4 flex items-center gap-2">
           <TrendingUp className="w-6 h-6 text-neon-pink" />
           Trending Items

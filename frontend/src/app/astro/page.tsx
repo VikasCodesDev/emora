@@ -52,9 +52,12 @@ export default function AstroPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-5xl font-heading font-bold glow-text mb-8 text-center">Astrology</h1>
+      <h1 className="text-5xl font-heading font-bold glow-text mb-4 text-center">Astrology</h1>
+      <p className="text-white/60 text-center"><p className="text-white/60 text-center">Step out of your comfort zone today</p>
+</p>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-12">
+
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mt-6 mb-12">
         {zodiacSigns.map((sign) => (
           <motion.button
             key={sign.name}

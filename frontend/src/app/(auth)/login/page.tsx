@@ -59,7 +59,7 @@ export default function LoginPage() {
             <h1 className="text-4xl font-heading font-bold gradient-text mb-2">
               Welcome Back
             </h1>
-            <p className="text-white/60">Sign in to continue to EMORA</p>
+            <p className="text-white/60">Sign in to continue to Emora</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

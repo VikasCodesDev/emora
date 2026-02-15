@@ -1,14 +1,26 @@
 import express from 'express';
-import { getTrendingSongs, searchSongs, getAlbum, getArtist, createPlaylist, getUserPlaylists } from '../controllers/musicController';
+import {
+  searchMusic,
+  getTrending,
+  getAlbum,
+  getArtist,
+  saveMusic,
+  getSavedMusic,
+  removeSavedMusic
+} from '../controllers/musicController';
 import { protect } from '../middleware/auth';
 
 const router = express.Router();
 
-router.get('/trending', getTrendingSongs);
-router.get('/search', searchSongs);
+// Public routes
+router.get('/search', searchMusic);
+router.get('/trending', getTrending);
 router.get('/album/:id', getAlbum);
 router.get('/artist/:id', getArtist);
-router.post('/playlist', protect, createPlaylist);
-router.get('/playlists', protect, getUserPlaylists);
+
+// Protected routes  
+router.post('/save', protect, saveMusic);
+router.get('/saved', protect, getSavedMusic);
+router.delete('/saved/:id', protect, removeSavedMusic);
 
 export default router;

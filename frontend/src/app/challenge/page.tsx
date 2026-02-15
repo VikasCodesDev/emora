@@ -86,12 +86,13 @@ export default function ChallengePage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-5xl font-heading font-bold glow-text mb-8">Daily Challenge</h1>
+      <h1 className="text-5xl font-heading font-bold glow-text mb-4 text-center">Challenge</h1>
+      <p className="text-white/60 text-center">Step out of your comfort zone today</p>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="glass-strong p-8 rounded-2xl mb-8"
+        className="glass-strong p-8 rounded-2xl mt-6 mb-8"
       >
         <h2 className="text-3xl font-heading font-bold text-neon-blue mb-4">
           {challenge.title}

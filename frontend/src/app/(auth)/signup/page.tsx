@@ -69,7 +69,7 @@ export default function SignupPage() {
         <div className="glass-strong p-8 rounded-2xl border border-neon-purple/30">
           <div className="text-center mb-8">
             <h1 className="text-4xl font-heading font-bold gradient-text mb-2">
-              Join EMORA
+              Join Emora
             </h1>
             <p className="text-white/60">Create your account to get started</p>
           </div>

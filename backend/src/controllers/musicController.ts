@@ -1,132 +1,250 @@
 import { Request, Response } from 'express';
 import axios from 'axios';
 import { AuthRequest } from '../middleware/auth';
-import Playlist from '../models/Playlist';
+import SavedMusic from '../models/SavedMusic';
 
-const SPOTIFY_CLIENT_ID = process.env.SPOTIFY_CLIENT_ID;
-const SPOTIFY_CLIENT_SECRET = process.env.SPOTIFY_CLIENT_SECRET;
-
-let spotifyToken: string = '';
-let tokenExpiry: number = 0;
-
-const getSpotifyToken = async (): Promise<string> => {
-  if (spotifyToken && Date.now() < tokenExpiry) {
-    return spotifyToken;
-  }
-
-  const response = await axios.post(
-    'https://accounts.spotify.com/api/token',
-    'grant_type=client_credentials',
-    {
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        Authorization: 'Basic ' + Buffer.from(`${SPOTIFY_CLIENT_ID}:${SPOTIFY_CLIENT_SECRET}`).toString('base64'),
-      },
-    }
-  );
-
-  spotifyToken = response.data.access_token;
-  tokenExpiry = Date.now() + (response.data.expires_in * 1000);
-  return spotifyToken;
-};
-
-export const getTrendingSongs = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const token = await getSpotifyToken();
-    const response = await axios.get('https://api.spotify.com/v1/browse/featured-playlists', {
-      headers: { Authorization: `Bearer ${token}` },
-      params: { limit: 1 }
-    });
-
-    const playlistId = response.data.playlists.items[0].id;
-    const tracks = await axios.get(`https://api.spotify.com/v1/playlists/${playlistId}/tracks`, {
-      headers: { Authorization: `Bearer ${token}` },
-      params: { limit: 20 }
-    });
-
-    res.status(200).json({ success: true, songs: tracks.data.items });
-  } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Failed to fetch trending songs' });
-  }
-};
-
-export const searchSongs = async (req: Request, res: Response): Promise<void> => {
+export const searchMusic = async (req: Request, res: Response): Promise<void> => {
   try {
     const { query } = req.query;
-    const token = await getSpotifyToken();
-    
-    const response = await axios.get('https://api.spotify.com/v1/search', {
-      headers: { Authorization: `Bearer ${token}` },
-      params: { q: query, type: 'track', limit: 20 }
-    });
 
-    res.status(200).json({ success: true, songs: response.data.tracks.items });
+    console.log('Search request received:', query);
+
+    if (!query || typeof query !== 'string') {
+      res.status(400).json({ success: false, message: 'Query parameter required' });
+      return;
+    }
+
+    // Try iTunes API (works globally)
+    const apiUrl = `https://itunes.apple.com/search?term=${encodeURIComponent(query)}&media=music&entity=song&limit=20`;
+    console.log('Calling iTunes API:', apiUrl);
+
+    const response = await axios.get(apiUrl);
+
+    console.log('iTunes response received:', response.data.results?.length || 0, 'tracks');
+
+    if (!response.data || !response.data.results) {
+      res.status(500).json({ success: false, message: 'Invalid API response' });
+      return;
+    }
+
+    const tracks = response.data.results.map((track: any) => ({
+      id: track.trackId,
+      title: track.trackName,
+      artist: track.artistName,
+      artistId: track.artistId,
+      album: track.collectionName,
+      albumId: track.collectionId,
+      cover: track.artworkUrl100.replace('100x100', '600x600'),
+      coverMedium: track.artworkUrl100.replace('100x100', '300x300'),
+      coverSmall: track.artworkUrl100,
+      preview: track.previewUrl,
+      duration: Math.floor(track.trackTimeMillis / 1000),
+      link: track.trackViewUrl
+    }));
+
+    res.status(200).json({ success: true, tracks });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Failed to search songs' });
+    console.error('Search music error:', error.message);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to search music',
+      error: error.message 
+    });
+  }
+};
+
+export const getTrending = async (req: Request, res: Response): Promise<void> => {
+  try {
+    console.log('Fetching trending music...');
+
+    // iTunes trending - popular songs
+    const apiUrl = 'https://itunes.apple.com/search?term=top+songs+2024&media=music&entity=song&limit=20';
+    console.log('Calling iTunes API:', apiUrl);
+
+    const response = await axios.get(apiUrl);
+
+    console.log('iTunes trending response received');
+
+    if (!response.data || !response.data.results) {
+      console.error('Invalid iTunes response structure');
+      res.status(500).json({ success: false, message: 'Invalid API response' });
+      return;
+    }
+
+    const tracks = response.data.results.map((track: any) => ({
+      id: track.trackId,
+      title: track.trackName,
+      artist: track.artistName,
+      artistId: track.artistId,
+      album: track.collectionName,
+      albumId: track.collectionId,
+      cover: track.artworkUrl100.replace('100x100', '600x600'),
+      coverMedium: track.artworkUrl100.replace('100x100', '300x300'),
+      coverSmall: track.artworkUrl100,
+      preview: track.previewUrl,
+      duration: Math.floor(track.trackTimeMillis / 1000),
+      link: track.trackViewUrl
+    }));
+
+    console.log('Returning', tracks.length, 'trending tracks');
+    res.status(200).json({ success: true, tracks });
+  } catch (error: any) {
+    console.error('Get trending error:', error.message);
+    res.status(500).json({ 
+      success: false, 
+      message: 'Failed to get trending music',
+      error: error.message 
+    });
   }
 };
 
 export const getAlbum = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const token = await getSpotifyToken();
-    
-    const response = await axios.get(`https://api.spotify.com/v1/albums/${id}`, {
-      headers: { Authorization: `Bearer ${token}` }
-    });
 
-    res.status(200).json({ success: true, album: response.data });
+    const response = await axios.get(`https://itunes.apple.com/lookup?id=${id}&entity=song`);
+
+    if (!response.data || !response.data.results) {
+      res.status(404).json({ success: false, message: 'Album not found' });
+      return;
+    }
+
+    const albumData = response.data.results[0];
+    const tracks = response.data.results.slice(1).map((track: any) => ({
+      id: track.trackId,
+      title: track.trackName,
+      artist: track.artistName,
+      artistId: track.artistId,
+      album: track.collectionName,
+      albumId: track.collectionId,
+      cover: track.artworkUrl100.replace('100x100', '600x600'),
+      coverMedium: track.artworkUrl100.replace('100x100', '300x300'),
+      coverSmall: track.artworkUrl100,
+      preview: track.previewUrl,
+      duration: Math.floor(track.trackTimeMillis / 1000),
+      link: track.trackViewUrl
+    }));
+
+    res.status(200).json({
+      success: true,
+      album: {
+        id: albumData.collectionId,
+        title: albumData.collectionName,
+        artist: albumData.artistName,
+        cover: albumData.artworkUrl100.replace('100x100', '600x600'),
+        releaseDate: albumData.releaseDate,
+        tracks
+      }
+    });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Failed to fetch album' });
+    console.error('Get album error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get album' });
   }
 };
 
 export const getArtist = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
-    const token = await getSpotifyToken();
-    
-    const [artist, topTracks] = await Promise.all([
-      axios.get(`https://api.spotify.com/v1/artists/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      }),
-      axios.get(`https://api.spotify.com/v1/artists/${id}/top-tracks`, {
-        headers: { Authorization: `Bearer ${token}` },
-        params: { market: 'US' }
-      })
-    ]);
 
-    res.status(200).json({ 
-      success: true, 
-      artist: artist.data,
-      topTracks: topTracks.data.tracks
+    const response = await axios.get(`https://itunes.apple.com/lookup?id=${id}&entity=song&limit=10`);
+
+    if (!response.data || !response.data.results) {
+      res.status(404).json({ success: false, message: 'Artist not found' });
+      return;
+    }
+
+    const artistData = response.data.results[0];
+    const tracks = response.data.results.slice(1).map((track: any) => ({
+      id: track.trackId,
+      title: track.trackName,
+      artist: track.artistName,
+      artistId: track.artistId,
+      album: track.collectionName,
+      albumId: track.collectionId,
+      cover: track.artworkUrl100.replace('100x100', '600x600'),
+      coverMedium: track.artworkUrl100.replace('100x100', '300x300'),
+      coverSmall: track.artworkUrl100,
+      preview: track.previewUrl,
+      duration: Math.floor(track.trackTimeMillis / 1000),
+      link: track.trackViewUrl
+    }));
+
+    res.status(200).json({
+      success: true,
+      artist: {
+        id: artistData.artistId,
+        name: artistData.artistName,
+        picture: artistData.artworkUrl100?.replace('100x100', '600x600') || '',
+        topTracks: tracks
+      }
     });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Failed to fetch artist' });
+    console.error('Get artist error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get artist' });
   }
 };
 
-export const createPlaylist = async (req: AuthRequest, res: Response): Promise<void> => {
+export const saveMusic = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { name, tracks } = req.body;
-    
-    const playlist = await Playlist.create({
+    const { trackId, title, artist, album, cover, preview, duration } = req.body;
+
+    const existingSave = await SavedMusic.findOne({
       userId: req.user!._id,
-      name,
-      tracks,
+      trackId
     });
 
-    res.status(201).json({ success: true, playlist });
+    if (existingSave) {
+      res.status(400).json({ success: false, message: 'Track already saved' });
+      return;
+    }
+
+    const savedMusic = await SavedMusic.create({
+      userId: req.user!._id,
+      trackId,
+      title,
+      artist,
+      album,
+      cover,
+      preview,
+      duration
+    });
+
+    res.status(201).json({ success: true, message: 'Track saved', data: savedMusic });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Failed to create playlist' });
+    console.error('Save music error:', error);
+    res.status(500).json({ success: false, message: 'Failed to save track' });
   }
 };
 
-export const getUserPlaylists = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getSavedMusic = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const playlists = await Playlist.find({ userId: req.user!._id }).sort({ createdAt: -1 });
-    res.status(200).json({ success: true, playlists });
+    const savedTracks = await SavedMusic.find({ userId: req.user!._id })
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, tracks: savedTracks });
   } catch (error: any) {
-    res.status(500).json({ success: false, message: 'Failed to fetch playlists' });
+    console.error('Get saved music error:', error);
+    res.status(500).json({ success: false, message: 'Failed to get saved music' });
+  }
+};
+
+export const removeSavedMusic = async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const { id } = req.params;
+
+    const deleted = await SavedMusic.findOneAndDelete({
+      _id: id,
+      userId: req.user!._id
+    });
+
+    if (!deleted) {
+      res.status(404).json({ success: false, message: 'Track not found' });
+      return;
+    }
+
+    res.status(200).json({ success: true, message: 'Track removed' });
+  } catch (error: any) {
+    console.error('Remove saved music error:', error);
+    res.status(500).json({ success: false, message: 'Failed to remove track' });
   }
 };

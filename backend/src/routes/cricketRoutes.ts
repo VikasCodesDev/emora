@@ -1,12 +1,20 @@
 import express from 'express';
-import { getLiveScores, getIccRankings, getMatchSchedule, getCricketTrivia, predictMatch } from '../controllers/cricketController';
+import {
+  getLiveMatches,
+  getMatchScorecard,
+  getSchedule,
+  getRankings,
+  getTrivia,
+  predictMatch
+} from '../controllers/cricketController';
 
 const router = express.Router();
 
-router.get('/live-scores', getLiveScores);
-router.get('/rankings', getIccRankings);
-router.get('/schedule', getMatchSchedule);
-router.get('/trivia', getCricketTrivia);
+router.get('/live', getLiveMatches);
+router.get('/scorecard/:id', getMatchScorecard);
+router.get('/schedule', getSchedule);
+router.get('/rankings', getRankings);
+router.get('/trivia', getTrivia);
 router.post('/predict', predictMatch);
 
 export default router;

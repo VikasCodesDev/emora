@@ -1,24 +1,28 @@
 import type { Metadata } from 'next';
-import { Orbitron, Inter } from 'next/font/google';
+import { Space_Grotesk, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
 import CursorGlow from '@/components/CursorGlow';
+import GlobalBackground from '@/components/GlobalBackground';
 import { Toaster } from 'sonner';
+import Footer from "@/components/Footer";
 
-const orbitron = Orbitron({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   variable: '--font-heading',
   display: 'swap',
+  weight: ['400', '500', '600', '700'],
 });
 
-const inter = Inter({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
   variable: '--font-body',
   display: 'swap',
+  weight: ['400', '500', '600', '700'],
 });
 
 export const metadata: Metadata = {
-  title: 'EMORA - AI-Powered Social Platform',
+  title: 'Emora',
   description: 'Next-generation immersive social and entertainment platform powered by AI',
 };
 
@@ -28,15 +32,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${orbitron.variable} ${inter.variable}`}>
-      <body className="font-body antialiased">
-        <div className="animated-bg" />
-        <div className="grid-bg fixed inset-0 -z-10 opacity-20" />
+    <html lang="en">
+      <body className={`${spaceGrotesk.variable} ${plusJakarta.variable} font-body`}>
+        <GlobalBackground />
         
         <CursorGlow />
         <Navbar />
         
-        <main className="min-h-screen pt-16">
+        <main className="min-h-screen pt-16 relative z-10">
           {children}
         </main>
         
@@ -51,6 +54,7 @@ export default function RootLayout({
             },
           }}
         />
+        <Footer />
       </body>
     </html>
   );

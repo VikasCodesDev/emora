@@ -60,10 +60,11 @@ export default function VaultPage() {
 
   return (
     <div className="container mx-auto px-4 py-12">
-      <h1 className="text-5xl font-heading font-bold glow-text mb-8">Your Vault</h1>
+      <h1 className="text-5xl font-heading font-bold glow-text mb-4 text-center">Your Vault</h1>
+      <p className="text-white/60 text-center">Your private space to save moods, memories, and favorite content</p>
       
       {analytics && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6 mb-8">
           <div className="glass p-6 rounded-xl">
             <div className="text-neon-blue text-3xl font-bold">{analytics.totalSaved}</div>
             <div className="text-white/60 text-sm">Total Saved</div>

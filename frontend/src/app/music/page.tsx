@@ -1,188 +1,337 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Play, Pause, Search, Heart, Plus } from 'lucide-react';
+import { Search, Play, Heart, Clock, TrendingUp } from 'lucide-react';
+import Image from 'next/image';
 import api from '@/lib/api';
 import { toast } from 'sonner';
-import Image from 'next/image';
+import { Track, SavedTrack } from '@/types/music';
+import { useMusicStore } from '@/store/musicStore';
 import { useAuthStore } from '@/store/authStore';
+import MusicPlayer from '@/components/music/MusicPlayer';
 
 export default function MusicPage() {
-  const [songs, setSongs] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentTrack, setCurrentTrack] = useState<any>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const [searchResults, setSearchResults] = useState<Track[]>([]);
+  const [trendingTracks, setTrendingTracks] = useState<Track[]>([]);
+  const [savedTracks, setSavedTracks] = useState<SavedTrack[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'search' | 'trending' | 'saved'>('trending');
+  const [hoveredTrack, setHoveredTrack] = useState<string | number | null>(null);
+
+  const { setCurrentTrack, currentTrack, recentlyPlayed } = useMusicStore();
   const { isAuthenticated } = useAuthStore();
 
   useEffect(() => {
     fetchTrending();
-  }, []);
+    if (isAuthenticated) {
+      fetchSaved();
+    }
+  }, [isAuthenticated]);
 
   const fetchTrending = async () => {
     try {
       const res = await api.get('/music/trending');
-      setSongs(res.data.songs.map((item: any) => item.track));
+      setTrendingTracks(res.data.tracks);
     } catch (error) {
-      toast.error('Failed to load music');
+      toast.error('Failed to load trending music');
+    }
+  };
+
+  const fetchSaved = async () => {
+    try {
+      const res = await api.get('/music/saved');
+      setSavedTracks(res.data.tracks);
+    } catch (error) {
+      console.error('Failed to load saved music');
     }
   };
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
+
+    setLoading(true);
+    setActiveTab('search');
     try {
-      const res = await api.get(`/music/search?query=${searchQuery}`);
-      setSongs(res.data.songs);
+      const res = await api.get(`/music/search?query=${encodeURIComponent(searchQuery)}`);
+      setSearchResults(res.data.tracks);
     } catch (error) {
       toast.error('Search failed');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const playTrack = (track: any) => {
-    if (track.preview_url) {
-      setCurrentTrack(track);
-      setIsPlaying(true);
-      if (audioRef.current) {
-        audioRef.current.src = track.preview_url;
-        audioRef.current.play();
-      }
-    } else {
-      toast.error('Preview not available');
-    }
+  const handlePlayTrack = (track: Track) => {
+    setCurrentTrack(track);
   };
 
-  const togglePlay = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  const saveToVault = async (track: any) => {
+  const handleSaveTrack = async (track: Track) => {
     if (!isAuthenticated) {
-      toast.error('Please login');
+      toast.error('Please login to save tracks');
       return;
     }
+
     try {
-      await api.post('/vault/save', {
-        type: 'playlist',
-        contentData: {
-          title: track.name,
-          url: track.external_urls?.spotify,
-          description: track.artists?.[0]?.name,
-          imageUrl: track.album?.images?.[0]?.url
-        }
+      await api.post('/music/save', {
+        trackId: track.id.toString(),
+        title: track.title,
+        artist: track.artist,
+        album: track.album,
+        cover: track.cover,
+        preview: track.preview,
+        duration: track.duration
       });
-      toast.success('Saved to vault!');
-    } catch (error) {
-      toast.error('Failed to save');
+      toast.success('Track saved!');
+      fetchSaved();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to save');
     }
   };
 
+  const handleRemoveTrack = async (id: string) => {
+    try {
+      await api.delete(`/music/saved/${id}`);
+      toast.success('Track removed!');
+      fetchSaved();
+    } catch (error) {
+      toast.error('Failed to remove');
+    }
+  };
+
+  const formatDuration = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const displayTracks =
+    activeTab === 'search'
+      ? searchResults
+      : activeTab === 'trending'
+      ? trendingTracks
+      : savedTracks;
+
   return (
-    <div className="container mx-auto px-4 py-12">
-      <h1 className="text-5xl font-heading font-bold glow-text mb-8">Music Hub</h1>
-
-      <div className="glass-strong p-4 rounded-xl mb-8 flex gap-3">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
-          placeholder="Search songs, artists, albums..."
-          className="flex-1 bg-transparent border-none focus:outline-none text-white placeholder-white/40"
-        />
-        <button
-          onClick={handleSearch}
-          className="px-6 py-2 bg-gradient-to-r from-neon-blue to-neon-purple rounded-lg"
-        >
-          <Search className="w-5 h-5" />
-        </button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-24">
-        {songs.map((track: any, idx) => (
-          <motion.div
-            key={track.id || idx}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: idx * 0.05 }}
-            className="glass rounded-xl overflow-hidden hover:bg-white/10 transition-all group"
-          >
-            {track.album?.images?.[0] && (
-              <div className="relative aspect-square">
-                <Image
-                  src={track.album.images[0].url}
-                  alt={track.name}
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
-                <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <button
-                    onClick={() => playTrack(track)}
-                    className="w-16 h-16 rounded-full bg-neon-blue flex items-center justify-center"
-                  >
-                    <Play className="w-8 h-8 text-white" />
-                  </button>
-                </div>
-              </div>
-            )}
-            <div className="p-4">
-              <h3 className="font-bold text-white line-clamp-1 mb-1">{track.name}</h3>
-              <p className="text-sm text-white/60 line-clamp-1">
-                {track.artists?.map((a: any) => a.name).join(', ')}
-              </p>
-              <div className="flex gap-2 mt-3">
-                <button
-                  onClick={() => saveToVault(track)}
-                  className="flex-1 px-3 py-2 bg-pink-500/20 hover:bg-pink-500/30 text-pink-400 rounded-lg transition-all flex items-center justify-center gap-2 text-sm"
-                >
-                  <Heart className="w-4 h-4" />
-                  Save
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-
-      {currentTrack && (
-        <div className="fixed bottom-0 left-0 right-0 glass-strong border-t border-white/10 p-4 z-50">
-          <div className="container mx-auto flex items-center gap-4">
-            {currentTrack.album?.images?.[0] && (
-              <div className="relative w-14 h-14 rounded">
-                <Image
-                  src={currentTrack.album.images[0].url}
-                  alt={currentTrack.name}
-                  fill
-                  className="object-cover rounded"
-                  unoptimized
-                />
-              </div>
-            )}
-            <div className="flex-1">
-              <div className="font-semibold text-white line-clamp-1">{currentTrack.name}</div>
-              <div className="text-sm text-white/60 line-clamp-1">
-                {currentTrack.artists?.map((a: any) => a.name).join(', ')}
-              </div>
-            </div>
-            <button
-              onClick={togglePlay}
-              className="w-12 h-12 rounded-full bg-neon-purple flex items-center justify-center"
-            >
-              {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
-            </button>
-          </div>
+    <div className="min-h-screen pb-32">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-5xl font-heading font-bold glow-text mb-4 text-center">Music</h1>
+          <p className="text-white/60 text-center">Discover and play millions of songs</p>
+          <p className="text-xs text-white/60 mt-2 text-center">
+          ⚠️Only preview clips are available due to copyright and licensing restrictions</p>
         </div>
-      )}
 
-      <audio ref={audioRef} onEnded={() => setIsPlaying(false)} />
+        {/* Tabs */}
+        <div className="flex justify-center gap-3 mb-6">
+          <button
+            onClick={() => setActiveTab('trending')}
+            className={`px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 ${
+              activeTab === 'trending'
+                ? 'bg-gradient-to-r from-neon-blue to-neon-purple'
+                : 'glass hover:bg-white/10'
+            }`}
+          >
+            <TrendingUp className="w-5 h-5" />
+            Trending
+          </button>
+          {searchResults.length > 0 && (
+            <button
+              onClick={() => setActiveTab('search')}
+              className={`px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 ${
+                activeTab === 'search'
+                  ? 'bg-gradient-to-r from-neon-blue to-neon-purple'
+                  : 'glass hover:bg-white/10'
+              }`}
+            >
+              <Search className="w-5 h-5" />
+              Search Results
+            </button>
+          )}
+          {isAuthenticated && (
+            <button
+              onClick={() => {
+                setActiveTab('saved');
+                fetchSaved();
+              }}
+              className={`px-6 py-3 rounded-lg font-medium transition-all flex items-center gap-2 ${
+                activeTab === 'saved'
+                  ? 'bg-gradient-to-r from-neon-blue to-neon-purple'
+                  : 'glass hover:bg-white/10'
+              }`}
+            >
+              <Heart className="w-5 h-5" />
+              Saved ({savedTracks.length})
+            </button>
+          )}
+        </div>
+
+        {/* Search Bar */}
+        <div className="glass-strong p-4 rounded-xl mb-6 flex gap-3">
+          <div className="flex-1 relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              placeholder="Search songs, artists, albums..."
+              className="w-full pl-12 pr-4 py-3 bg-white/5 border border-white/10 rounded-lg text-white placeholder-white/40 focus:outline-none focus:border-neon-blue transition-colors"
+            />
+          </div>
+          <button
+            onClick={handleSearch}
+            disabled={loading}
+            className="px-8 py-3 bg-gradient-to-r from-neon-blue to-neon-purple rounded-lg font-medium hover:shadow-lg hover:shadow-neon-blue/50 transition-all disabled:opacity-50"
+          >
+            {loading ? 'Searching...' : 'Search'}
+          </button>
+        </div>
+
+        {/* Recently Played */}
+        {recentlyPlayed.length > 0 && (
+          <div className="mb-8">
+            <h2 className="text-2xl font-heading font-bold mb-4">Recently Played</h2>
+            <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
+              {recentlyPlayed.map((track) => (
+                <motion.div
+                  key={track.id}
+                  whileHover={{ scale: 1.05 }}
+                  className="glass p-4 rounded-xl min-w-[180px] cursor-pointer group"
+                  onClick={() => handlePlayTrack(track)}
+                >
+                  <div className="relative w-full aspect-square mb-3 rounded-lg overflow-hidden">
+                    <Image
+                      src={track.coverMedium || track.cover}
+                      alt={track.title}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Play className="w-12 h-12 text-white" fill="white" />
+                    </div>
+                  </div>
+                  <div className="font-semibold text-sm truncate">{track.title}</div>
+                  <div className="text-xs text-white/60 truncate">{track.artist}</div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Track List */}
+        <div className="glass-strong rounded-xl overflow-hidden">
+          <div className="p-4 border-b border-white/10">
+            <h2 className="text-xl font-heading font-bold">
+              {activeTab === 'search'
+                ? `Results (${searchResults.length})`
+                : activeTab === 'trending'
+                ? 'Top Trending'
+                : 'Your Library'}
+            </h2>
+          </div>
+
+          <div className="divide-y divide-white/5">
+            {displayTracks.map((track, index) => (
+              <motion.div
+                key={track.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.02 }}
+                onMouseEnter={() => setHoveredTrack(track.id)}
+                onMouseLeave={() => setHoveredTrack(null)}
+                className={`p-4 hover:bg-white/5 transition-all cursor-pointer group ${
+                  currentTrack?.id === track.id ? 'bg-white/5' : ''
+                }`}
+              >
+                <div className="flex items-center gap-4">
+                  {/* Number/Play Button */}
+                  <div className="w-8 flex items-center justify-center flex-shrink-0">
+                    {hoveredTrack === track.id ? (
+                      <button
+                        onClick={() => handlePlayTrack(track)}
+                        className="w-8 h-8 rounded-full bg-neon-blue flex items-center justify-center"
+                      >
+                        <Play className="w-4 h-4" fill="white" />
+                      </button>
+                    ) : (
+                      <span className="text-white/60 font-medium">{index + 1}</span>
+                    )}
+                  </div>
+
+                  {/* Cover */}
+                  <div className="relative w-12 h-12 rounded overflow-hidden flex-shrink-0">
+                    <Image
+                      src={track.coverSmall || track.cover}
+                      alt={track.title}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
+
+                  {/* Track Info */}
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-white truncate">{track.title}</div>
+                    <div className="text-sm text-white/60 truncate">{track.artist}</div>
+                  </div>
+
+                  {/* Album */}
+                  <div className="hidden md:block flex-1 min-w-0">
+                    <div className="text-sm text-white/60 truncate">{track.album}</div>
+                  </div>
+
+                  {/* Duration */}
+                  <div className="hidden sm:flex items-center gap-2 text-white/60">
+                    <Clock className="w-4 h-4" />
+                    <span className="text-sm">{formatDuration(track.duration)}</span>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex items-center gap-2">
+                    {activeTab === 'saved' ? (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleRemoveTrack((track as SavedTrack)._id);
+                        }}
+                        className="p-2 hover:bg-red-500/20 text-red-400 rounded-lg transition-all"
+                      >
+                        <Heart className="w-5 h-5" fill="currentColor" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSaveTrack(track);
+                        }}
+                        className="p-2 hover:bg-pink-500/20 text-pink-400 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                      >
+                        <Heart className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {displayTracks.length === 0 && !loading && (
+            <div className="p-12 text-center text-white/60">
+              {activeTab === 'search'
+                ? 'No results found. Try a different search.'
+                : activeTab === 'saved'
+                ? 'No saved tracks yet. Start saving your favorites!'
+                : 'Loading trending music...'}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <MusicPlayer />
     </div>
   );
 }

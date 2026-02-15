@@ -43,7 +43,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <div className="text-2xl font-heading font-bold gradient-text">
-              EMORA
+              Emora
             </div>
           </Link>
 
