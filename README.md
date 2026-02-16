@@ -1,4 +1,4 @@
-# Emora — AI-Powered Gen-Z Social Universe 🧿🫶
+# Emora - AI Powered Gen-Z Social Universe 🧿🫶
 
 ![Emora Preview](./emora_preview.png)
 
