@@ -43,7 +43,7 @@ export default function VaultPage() {
     }
   };
 
-  const deleteItem = async (id) => {
+  const deleteItem = async (id: string) => {
     try {
       await api.delete(`/vault/${id}`);
       toast.success('Removed from vault');
