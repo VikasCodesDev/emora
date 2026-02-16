@@ -6,10 +6,9 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3-38bdf8?style=for-the-badge)
 ![Framer Motion](https://img.shields.io/badge/Framer_Motion-Animation-b000ff?style=for-the-badge)
-![Three.js](https://img.shields.io/badge/Three.js-3D-7-violet?style=for-the-badge)
+![Three.js](https://img.shields.io/badge/Three.js-7-violet?style=for-the-badge)
 ![Zustand](https://img.shields.io/badge/Zustand-State-ff00d4?style=for-the-badge)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Database-00ff88?style=for-the-badge)
-![AI Powered](https://img.shields.io/badge/AI-Powered-Platform-00f0ff?style=for-the-badge)
 
 A futuristic AI-powered Gen-Z social platform that delivers personalized content based on mood, trends, and user interaction. Emora combines entertainment, utilities, and social features into one immersive sci-fi experience.
 
