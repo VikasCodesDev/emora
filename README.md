@@ -5,62 +5,62 @@ A futuristic AI-powered Gen-Z social platform that delivers personalized content
 ## ✨ Core Features
 
 ### 🧠 AI-Powered Personalization
-- **Mood-based content recommendations
-- **Intelligent content suggestions
-- **Personalized user experience
-- **Smart interaction tracking
+- Mood-based content recommendations
+- Intelligent content suggestions
+- Personalized user experience
+- Smart interaction tracking
 
 ### 🎭 Multi-Module Platform
 Emora is not just one app — it’s a complete digital universe:
-- **🎵 Music Hub — Discover trending songs & previews
-- **😂 Memes — Viral content & humor feed
-- **🧠 Mood Detector — Emotion-based recommendations
-- **📰 Trending News — Real-time global trends
-- **🏏 Cricket Hub — Live scores, fixtures, rankings
-- **🖼️ Wallpapers — Aesthetic downloads
-- **💬 Daily Quotes — Motivation & inspiration
-- **🗳️ Polls — Interactive community voting
-- **🏆 Daily Challenges — Tasks for engagement
-- **🔮 Astrology — Zodiac insights
-- **👗 Fashion Hub — Style trends
-- **🗂️ Vault — Save favorite content
+- 🎵 Music Hub — Discover trending songs & previews
+- 😂 Memes — Viral content & humor feed
+- 🧠 Mood Detector — Emotion-based recommendations
+- 📰 Trending News — Real-time global trends
+- 🏏 Cricket Hub — Live scores, fixtures, rankings
+- 🖼️ Wallpapers — Aesthetic downloads
+- 💬 Daily Quotes — Motivation & inspiration
+- 🗳️ Polls — Interactive community voting
+- 🏆 Daily Challenges — Tasks for engagement
+- 🔮 Astrology — Zodiac insights
+- 👗 Fashion Hub — Style trends
+- 🗂️ Vault — Save favorite content
 
 ### 🎨 Design & Experience
-- **🌌 Futuristic sci-fi dark UI
-- **✨ Neon glow aesthetic
-- **🧊 Glassmorphism components
-- **🌠 Animated background effects
-- **🧲 Magnetic cursor interactions
-- **🎥 Smooth motion animations
-- **📱 Fully responsive design
+- 🌌 Futuristic sci-fi dark UI
+- ✨ Neon glow aesthetic
+- 🧊 Glassmorphism components
+- 🌠 Animated background effects
+- 🧲 Magnetic cursor interactions
+- 🎥 Smooth motion animations
+- 📱 Fully responsive design
   
 ### 🔐 User System
-- ** Authentication & protected routes
-- ** Personalized dashboard
-- ** Content saving (Vault)
-- ** Activity tracking
+- Authentication & protected routes
+- Personalized dashboard
+- Content saving (Vault)
+- Activity tracking
 
 ## 🚀 Tech Stack
 
 ### 🧩 Frontend
-- ** Framework: Next.js 14 (App Router)
-- ** Language: TypeScript
-- ** Styling: Tailwind CSS
-- ** Animations: Framer Motion
-- ** 3D Graphics: Three.js / React Three Fiber
-- ** State Management: Zustand
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Animations**: Framer Motion
+- **3D Graphics**: Three.js / React Three Fiber
+- **State Management**: Zustand
 
 ### ⚙️ Backend
 
-- ** Node.js + Express
-- ** REST APIs
+- Node.js + Express
+- REST APIs
 Authentication system
 
 ### 🗄️ Database
-- ** MongoDB
+- MongoDB
 
 ### 🌐 External APIs
-- ** Music APIs
-- ** News APIs
-- ** Cricket data APIs
-- ** Image & content APIs
+- Music APIs
+- News APIs
+- Cricket data APIs
+- Image & content APIs
