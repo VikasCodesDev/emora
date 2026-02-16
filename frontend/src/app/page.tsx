@@ -46,11 +46,10 @@ export default function Home() {
               <span className="gradient-text">Emora</span>
             </h1>
             <p className="text-xl md:text-2xl text-white/80 mb-4 font-medium">
-              Your AI-Powered Social Universe
+              Where Emotions Meet Artificial Intelligence
             </p>
             <p className="text-base md:text-lg text-white/60 max-w-2xl mx-auto mb-12">
-              Experience the next generation of social entertainment with mood detection,
-              AI-generated content
+              From mood-aware content to AI-crafted experiences - everything adapts to you.
             </p>
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
