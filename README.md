@@ -6,7 +6,7 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue?style=for-the-badge)
 ![TailwindCSS](https://img.shields.io/badge/TailwindCSS-3-38bdf8?style=for-the-badge)
 ![Framer Motion](https://img.shields.io/badge/Framer_Motion-Animation-b000ff?style=for-the-badge)
-![Three.js](https://img.shields.io/badge/Three.js-7-violet?style=for-the-badge)
+![Three.js](https://img.shields.io/badge/Three.js-violet?style=for-the-badge)
 ![Zustand](https://img.shields.io/badge/Zustand-State-ff00d4?style=for-the-badge)
 ![MongoDB](https://img.shields.io/badge/MongoDB-Database-00ff88?style=for-the-badge)
 
