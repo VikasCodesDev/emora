@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import axios from 'axios';
 import { AuthRequest } from '../middleware/auth';
 
-const AI_API_URL = process.env.AI_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
-const AI_API_KEY = process.env.AI_API_KEY || '';
+const AI_API_URL = process.env.OPENROUTER_AI_API_URL || 'https://openrouter.ai/api/v1/chat/completions';
+const AI_API_KEY = process.env.OPENROUTER_API_KEY || '';
 
 // ============================================================
 // AI CALL HELPER
