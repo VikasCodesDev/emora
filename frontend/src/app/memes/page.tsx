@@ -24,7 +24,7 @@ export default function MemesPage() {
   setLoading(true);
 
   try {
-    const response = await api.get('/content/memes?limit=20');
+    const response = await api.get('/api/content/memes?limit=20');
 
     console.log("Memes API Response:", response.data);
 
@@ -53,7 +53,7 @@ export default function MemesPage() {
 
     setGeneratingCaption(meme.postLink);
     try {
-      const response = await api.post('/content/memes/caption', {
+      const response = await api.post('/api/content/memes/caption', {
         memeUrl: meme.url,
         memeTitle: meme.title,
       });
