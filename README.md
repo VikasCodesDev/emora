@@ -12,6 +12,8 @@
 
 A futuristic AI-powered Gen-Z social platform that delivers personalized content based on mood, trends, and user interaction. Emora combines entertainment, utilities, and social features into one immersive sci-fi experience.
 
+🌐 Live Website: https://emora-ai.vercel.app/
+
 ## ✨ Core Features
 
 ### 🧠 AI-Powered Personalization
