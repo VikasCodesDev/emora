@@ -53,7 +53,7 @@ export default function AstroPage() {
   return (
     <div className="container mx-auto px-4 py-12">
       <h1 className="text-5xl font-heading font-bold glow-text mb-4 text-center">Astrology</h1>
-      <p className="text-white/60 text-center"><p className="text-white/60 text-center">Step out of your comfort zone today</p>
+      <p className="text-white/60 text-center"><p className="text-white/60 text-center">Cosmic guidance for modern souls</p>
 </p>
 
 

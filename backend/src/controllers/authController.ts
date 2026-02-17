@@ -5,9 +5,11 @@ import { AuthRequest } from '../middleware/auth';
 
 // Generate JWT Token
 const generateToken = (id: string): string => {
-  return jwt.sign({ id }, process.env.JWT_SECRET!, {
-    expiresIn: process.env.JWT_EXPIRE || '7d',
-  });
+  return jwt.sign(
+  { id },
+  process.env.JWT_SECRET as string,
+  { expiresIn: "7d" }
+  );
 };
 
 // Send token response with HTTP-only cookie
