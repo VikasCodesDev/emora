@@ -41,7 +41,7 @@ export default function VaultPage() {
 
   const fetchVault = async () => {
     try {
-      const response = await api.get('/vault');
+      const response = await api.get('/api/vault');
       setContent(response.data.content);
     } catch (error) {
       toast.error('Failed to load vault');
@@ -52,7 +52,7 @@ export default function VaultPage() {
 
   const fetchAnalytics = async () => {
     try {
-      const response = await api.get('/vault/analytics');
+      const response = await api.get('/api/vault/analytics');
       setAnalytics(response.data.analytics);
     } catch (error) {
       console.error('Analytics error:', error);
@@ -61,7 +61,7 @@ export default function VaultPage() {
 
   const deleteItem = async (id: string) => {
     try {
-      await api.delete(`/vault/${id}`);
+      await api.delete(`/api/vault/${id}`);
       toast.success('Removed from vault');
       fetchVault();
       fetchAnalytics();

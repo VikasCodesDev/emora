@@ -18,7 +18,7 @@ export default function ChallengePage() {
 
   const fetchChallenge = async () => {
     try {
-      const res = await api.get('/challenge/daily');
+      const res = await api.get('/api/challenge/daily');
       setChallenge(res.data.challenge);
       if (res.data.challenge._id) {
         fetchLeaderboard(res.data.challenge._id);
@@ -30,7 +30,7 @@ export default function ChallengePage() {
 
   const fetchLeaderboard = async (challengeId: string) => {
     try {
-      const res = await api.get(`/challenge/leaderboard/${challengeId}`);
+      const res = await api.get(`/api/challenge/leaderboard/${challengeId}`);
       setLeaderboard(res.data.leaderboard);
     } catch (error) {
       console.error('Leaderboard error:', error);
@@ -47,7 +47,7 @@ export default function ChallengePage() {
       return;
     }
     try {
-      await api.post('/challenge/submit', {
+      await api.post('/api/challenge/submit', {
         challengeId: challenge._id,
         response
       });
@@ -65,7 +65,7 @@ export default function ChallengePage() {
       return;
     }
     try {
-      await api.post('/challenge/vote', {
+      await api.post('/api/challenge/vote', {
         challengeId: challenge._id,
         submissionIndex: index
       });

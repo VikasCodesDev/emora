@@ -18,7 +18,7 @@ export default function QuotesPage() {
 
   const fetchQuote = async () => {
     try {
-      const res = await api.get(`/quotes/random?category=${category}`);
+      const res = await api.get(`/api/quotes/random?category=${category}`);
       setQuote(res.data.quote);
     } catch (error) {
       toast.error('Failed to load quote');
@@ -32,7 +32,7 @@ export default function QuotesPage() {
     }
     setGenerating(true);
     try {
-      const res = await api.post('/quotes/generate', { topic: category });
+      const res = await api.post('/api/quotes/generate', { topic: category });
       setQuote(res.data.quote);
       toast.success('AI quote generated!');
     } catch (error) {
@@ -53,7 +53,7 @@ export default function QuotesPage() {
       return;
     }
     try {
-      await api.post('/vault/save', {
+      await api.post('/api/vault/save', {
         type: 'quote',
         contentData: {
           title: quote.text,

@@ -27,7 +27,7 @@ export default function MoodPage() {
 
     setLoading(true);
     try {
-      const response = await api.post('/mood/analyze-text', { text });
+      const response = await api.post('/api/mood/analyze-text', { text });
       setMoodResult(response.data.data);
       toast.success('Mood analyzed!');
     } catch (error: any) {
@@ -41,7 +41,7 @@ export default function MoodPage() {
     if (!moodResult) return;
 
     try {
-      await api.post('/vault/save', {
+      await api.post('/api/vault/save', {
         type: 'mood',
         contentData: {
           mood: moodResult.mood,

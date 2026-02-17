@@ -47,7 +47,7 @@ export default function SignupPage() {
   const onSubmit = async (data: SignupFormData) => {
     setIsLoading(true);
     try {
-      const response = await api.post('/auth/signup', data);
+      const response = await api.post('/api/auth/signup', data);
       const { user, token } = response.data;
       setAuth(user, token);
       toast.success('Account created successfully!');

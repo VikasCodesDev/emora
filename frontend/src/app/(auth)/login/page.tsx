@@ -35,7 +35,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
     try {
-      const response = await api.post('/auth/login', data);
+      const response = await api.post('/api/auth/login', data);
       const { user, token } = response.data;
       setAuth(user, token);
       toast.success('Welcome back!');

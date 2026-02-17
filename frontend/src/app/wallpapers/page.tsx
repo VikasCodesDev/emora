@@ -17,7 +17,7 @@ export default function WallpapersPage() {
 
   const fetchWallpapers = async () => {
     try {
-      const res = await api.get(`/wallpapers?category=${category}`);
+      const res = await api.get(`/api/wallpapers?category=${category}`);
       setWallpapers(res.data.wallpapers);
     } catch (error) {
       toast.error('Failed to load wallpapers');
@@ -30,7 +30,7 @@ export default function WallpapersPage() {
       return;
     }
     try {
-      await api.post('/vault/save', {
+      await api.post('/api/vault/save', {
         type: 'wallpaper',
         contentData: {
           title: wallpaper.description || 'Wallpaper',

@@ -73,7 +73,7 @@ export default function MemesPage() {
     }
 
     try {
-      await api.post('/vault/save', {
+      await api.post('/api/vault/save', {
         type: 'meme',
         contentData: {
           title: meme.title,

@@ -32,7 +32,7 @@ export default function MusicPage() {
 
   const fetchTrending = async () => {
     try {
-      const res = await api.get('/music/trending');
+      const res = await api.get('/api/music/trending');
       setTrendingTracks(res.data.tracks);
     } catch (error) {
       toast.error('Failed to load trending music');
@@ -41,7 +41,7 @@ export default function MusicPage() {
 
   const fetchSaved = async () => {
     try {
-      const res = await api.get('/music/saved');
+      const res = await api.get('/api/music/saved');
       setSavedTracks(res.data.tracks);
     } catch (error) {
       console.error('Failed to load saved music');
@@ -54,7 +54,7 @@ export default function MusicPage() {
     setLoading(true);
     setActiveTab('search');
     try {
-      const res = await api.get(`/music/search?query=${encodeURIComponent(searchQuery)}`);
+      const res = await api.get(`/api/music/search?query=${encodeURIComponent(searchQuery)}`);
       setSearchResults(res.data.tracks);
     } catch (error) {
       toast.error('Search failed');
@@ -74,7 +74,7 @@ export default function MusicPage() {
     }
 
     try {
-      await api.post('/music/save', {
+      await api.post('/api/music/save', {
         trackId: track.id.toString(),
         title: track.title,
         artist: track.artist,
@@ -92,7 +92,7 @@ export default function MusicPage() {
 
   const handleRemoveTrack = async (id: string) => {
     try {
-      await api.delete(`/music/saved/${id}`);
+      await api.delete(`/api/music/saved/${id}`);
       toast.success('Track removed!');
       fetchSaved();
     } catch (error) {

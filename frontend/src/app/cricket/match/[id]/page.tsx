@@ -23,7 +23,7 @@ export default function MatchScorecardPage() {
 
   const fetchScorecard = async (id: string) => {
     try {
-      const res = await api.get(`/cricket/scorecard/${id}`);
+      const res = await api.get(`api/cricket/scorecard/${id}`);
       setScorecard(res.data.data);
     } catch (error) {
       toast.error('Failed to load scorecard');

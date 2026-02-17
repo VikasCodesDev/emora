@@ -32,17 +32,17 @@ export default function CricketPage() {
     setLoading(true);
     try {
       if (activeTab === 'live') {
-        const res = await api.get('/cricket/live');
+        const res = await api.get('/api/cricket/live');
         setLiveMatches(res.data.matches || []);
       } else if (activeTab === 'schedule') {
-        const res = await api.get('/cricket/schedule');
+        const res = await api.get('/api/cricket/schedule');
         setSchedule(res.data.matches || []);
       } else if (activeTab === 'rankings') {
-        const res = await api.get(`/cricket/rankings?format=${rankingFormat}`);
+        const res = await api.get(`/api/cricket/rankings?format=${rankingFormat}`);
         setRankings(res.data.rankings || []);
       } else if (activeTab === 'trivia') {
         if (!trivia) {
-          const res = await api.get('/cricket/trivia');
+          const res = await api.get('/api/cricket/trivia');
           setTrivia(res.data.trivia);
         }
       }
@@ -55,7 +55,7 @@ export default function CricketPage() {
 
   const fetchNewTrivia = async () => {
     try {
-      const res = await api.get('/cricket/trivia');
+      const res = await api.get('/api/cricket/trivia');
       setTrivia(res.data.trivia);
     } catch (error) {
       toast.error('Failed to fetch trivia');

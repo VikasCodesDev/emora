@@ -15,7 +15,7 @@ export default function TrendingPage() {
 
   const fetchNews = async () => {
     try {
-      const res = await api.get(`/trending/news?category=${category}`);
+      const res = await api.get(`/api/trending/news?category=${category}`);
       setNews(res.data.news);
     } catch (error) {
       toast.error('Failed to load news');

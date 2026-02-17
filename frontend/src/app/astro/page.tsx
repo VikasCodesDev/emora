@@ -29,7 +29,7 @@ export default function AstroPage() {
 
   const fetchHoroscope = async (sign: string) => {
     try {
-      const res = await api.get(`/astro/horoscope/${sign.toLowerCase()}`);
+      const res = await api.get(`/api/astro/horoscope/${sign.toLowerCase()}`);
       setHoroscope(res.data.horoscope);
       setSelectedSign(sign);
     } catch (error) {
@@ -43,7 +43,7 @@ export default function AstroPage() {
       return;
     }
     try {
-      const res = await api.get(`/astro/compatibility?sign1=${sign1}&sign2=${sign2}`);
+      const res = await api.get(`/api/astro/compatibility?sign1=${sign1}&sign2=${sign2}`);
       setCompatibility(res.data.compatibility);
     } catch (error) {
       toast.error('Failed to check compatibility');

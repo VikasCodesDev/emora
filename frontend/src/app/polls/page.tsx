@@ -19,7 +19,7 @@ export default function PollsPage() {
 
   const fetchPolls = async () => {
     try {
-      const res = await api.get('/polls');
+      const res = await api.get('/api/polls');
       setPolls(res.data.polls);
     } catch (error) {
       toast.error('Failed to load polls');
@@ -37,7 +37,7 @@ export default function PollsPage() {
       return;
     }
     try {
-      await api.post('/polls', { question, options: validOptions });
+      await api.post('/api/polls', { question, options: validOptions });
       toast.success('Poll created!');
       setShowCreate(false);
       setQuestion('');
@@ -54,7 +54,7 @@ export default function PollsPage() {
       return;
     }
     try {
-      await api.post(`/polls/${pollId}/vote`, { optionIndex });
+      await api.post(`/api/polls/${pollId}/vote`, { optionIndex });
       toast.success('Vote recorded!');
       fetchPolls();
     } catch (error: any) {

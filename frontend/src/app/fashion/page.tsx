@@ -18,7 +18,7 @@ export default function FashionPage() {
 
   const fetchOutfits = async () => {
     try {
-      const res = await api.get('/fashion/outfits');
+      const res = await api.get('/api/fashion/outfits');
       setOutfits(res.data.outfits);
     } catch (error) {
       toast.error('Failed to load outfits');
@@ -27,7 +27,7 @@ export default function FashionPage() {
 
   const fetchTrendingItems = async () => {
     try {
-      const res = await api.get('/fashion/trending');
+      const res = await api.get('/api/fashion/trending');
       setTrendingItems(res.data.items);
     } catch (error) {
       console.error('Trending items error');
@@ -40,7 +40,7 @@ export default function FashionPage() {
       return;
     }
     try {
-      await api.post('/vault/save', {
+      await api.post('/api/vault/save', {
         type: 'wallpaper',
         contentData: {
           title: outfit.title,
