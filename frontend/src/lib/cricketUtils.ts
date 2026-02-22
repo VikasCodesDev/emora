@@ -1,4 +1,7 @@
 export const getMatchStatus = (status: string): { text: string; color: string } => {
+  // FIX: Guard against undefined/null status
+  if (!status) return { text: 'UNKNOWN', color: 'bg-gray-500' };
+  
   const statusLower = status.toLowerCase();
   
   if (statusLower.includes('live') || statusLower.includes('in progress')) {
@@ -21,6 +24,8 @@ export const getMatchStatus = (status: string): { text: string; color: string } 
 };
 
 export const formatDate = (dateString: string): string => {
+  if (!dateString) return 'Date TBA';
+  
   const date = new Date(dateString);
   const now = new Date();
   const diffTime = date.getTime() - now.getTime();
@@ -38,6 +43,8 @@ export const formatDate = (dateString: string): string => {
 };
 
 export const getCountdownTime = (dateString: string): string => {
+  if (!dateString) return 'TBA';
+  
   const targetDate = new Date(dateString);
   const now = new Date();
   const diff = targetDate.getTime() - now.getTime();
@@ -54,6 +61,9 @@ export const getCountdownTime = (dateString: string): string => {
 };
 
 export const getTeamFlag = (teamName: string): string => {
+  // FIX: Guard against undefined/null teamName
+  if (!teamName) return '🏏';
+  
   const flagMap: { [key: string]: string } = {
     'india': '🇮🇳',
     'australia': '🇦🇺',
@@ -77,7 +87,11 @@ export const getTeamFlag = (teamName: string): string => {
   return flagMap[key] || '🏏';
 };
 
-export const getMatchTypeColor = (type: string): string => {
+// FIX: Line 81 — Guard against undefined type parameter
+export const getMatchTypeColor = (type: string | undefined | null): string => {
+  // Return default if type is missing
+  if (!type) return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+  
   switch (type.toLowerCase()) {
     case 'test':
       return 'bg-red-500/20 text-red-400 border-red-500/30';
