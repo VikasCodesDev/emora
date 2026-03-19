@@ -4,7 +4,7 @@ import React from "react";
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FaInstagram, FaXTwitter, FaLinkedin, FaGithub } from "react-icons/fa6";
-import { Mail, ArrowRight, Sparkles, Send } from 'lucide-react';
+import { Mail, ArrowRight, Send } from 'lucide-react';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -22,16 +22,14 @@ const Footer = () => {
       { name: 'Polls', href: '/polls' },
       { name: 'Challenges', href: '/challenge' },
     ],
-    legal: [
-      { name: 'Privacy Policy', href: '/privacy' },
-      { name: 'Terms of Service', href: '/terms' },
-      { name: 'Cookie Policy', href: '/cookies' },
+    support: [
       { name: 'Help Center', href: '/help' },
+      { name: 'Contact Us', href: '/contact' },
     ]
   };
 
   const socialLinks = [
-    { icon: <FaInstagram size={20} />, href: "https://www.instagram.com/vikas01/?hl=en#", color: "hover:text-pink-500", label: "Instagram" },
+    { icon: <FaInstagram size={20} />, href: "https://www.instagram.com/vikas01_____?igsh=MW1xNTI2bDBndHBtNQ==", color: "hover:text-pink-500", label: "Instagram" },
     { icon: <FaXTwitter size={20} />, href: "https://x.com/MishraVika46260", color: "hover:text-blue-400", label: "X" },
     { icon: <FaLinkedin size={20} />, href: "https://www.linkedin.com/in/vikas-mishra0106", color: "hover:text-blue-600", label: "LinkedIn" },
     { icon: <FaGithub size={20} />, href: "https://github.com/VikasCodesDev", color: "hover:text-gray-400", label: "GitHub" },
@@ -48,8 +46,12 @@ const Footer = () => {
           {/* Column 1: Brand */}
           <div className="space-y-6">
             <Link href="/" className="flex items-center space-x-3 group">
-              <div className="p-2 rounded-lg bg-gradient-to-tr from-neon-blue to-neon-purple group-hover:shadow-[0_0_20px_rgba(0,240,255,0.5)] transition-all duration-300">
-                <Sparkles className="w-5 h-5 text-white" />
+              <div className="p-1 rounded-lg bg-gradient-to-tr from-neon-blue/20 to-neon-purple/20 group-hover:shadow-[0_0_20px_rgba(0,240,255,0.3)] transition-all duration-300">
+                <img
+                  src="/icon.png"
+                  alt="Emora Logo"
+                  className="w-10 h-10 object-contain drop-shadow-[0_0_8px_rgba(0,240,255,0.5)]"
+                />
               </div>
               <span className="text-2xl font-heading font-bold gradient-text">Emora</span>
             </Link>
@@ -90,13 +92,13 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Column 3: Community */}
+          {/* Column 3: Support */}
           <div className="space-y-6">
             <h4 className="text-sm font-semibold text-white uppercase tracking-wider flex items-center">
-              <span className="w-8 h-px bg-neon-purple mr-3" /> Community
+              <span className="w-8 h-px bg-neon-purple mr-3" /> Support
             </h4>
             <ul className="space-y-3">
-              {footerLinks.community.map((link) => (
+              {footerLinks.support.map((link) => (
                 <li key={link.name}>
                   <Link href={link.href} className="text-white/50 hover:text-neon-purple transition-colors duration-200 text-sm flex items-center group">
                     <ArrowRight className="w-3 h-3 mr-2 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
@@ -129,7 +131,7 @@ const Footer = () => {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 text-center md:text-left">
           <div className="text-white/40 text-xs">
             © {currentYear} <span className="text-white font-medium">Emora</span>. Designed with 
             <motion.span 
@@ -140,14 +142,6 @@ const Footer = () => {
               ❤
             </motion.span> 
             by <a href="https://www.linkedin.com/in/vikas-mishra0106" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-neon-blue transition-colors">Vikas</a>
-          </div>
-          
-          <div className="flex gap-8">
-            {footerLinks.legal.slice(0, 3).map((link) => (
-              <Link key={link.name} href={link.href} className="text-white/30 hover:text-white transition-colors text-xs uppercase tracking-widest">
-                {link.name}
-              </Link>
-            ))}
           </div>
         </div>
       </div>
