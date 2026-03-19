@@ -15,12 +15,16 @@ const Footer = () => {
       { name: 'Mood', href: '/mood' },
       { name: 'Vault', href: '/vault' },
       { name: 'Music', href: '/music' },
-    ],
-    community: [
       { name: 'Trending', href: '/trending' },
       { name: 'Cricket', href: '/cricket' },
+    ],
+    explore: [
+      { name: 'Wallpapers', href: '/wallpapers' },
+      { name: 'Quotes', href: '/quotes' },
       { name: 'Polls', href: '/polls' },
       { name: 'Challenges', href: '/challenge' },
+      { name: 'Astro', href: '/astro' },
+      { name: 'Fashion', href: '/fashion' },
     ],
     support: [
       { name: 'Help Center', href: '/help' },
@@ -92,13 +96,13 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Column 3: Support */}
+          {/* Column 3: Explore & Support */}
           <div className="space-y-6">
             <h4 className="text-sm font-semibold text-white uppercase tracking-wider flex items-center">
-              <span className="w-8 h-px bg-neon-purple mr-3" /> Support
+              <span className="w-8 h-px bg-neon-purple mr-3" /> Explore
             </h4>
             <ul className="space-y-3">
-              {footerLinks.support.map((link) => (
+              {footerLinks.explore.map((link) => (
                 <li key={link.name}>
                   <Link href={link.href} className="text-white/50 hover:text-neon-purple transition-colors duration-200 text-sm flex items-center group">
                     <ArrowRight className="w-3 h-3 mr-2 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all duration-200" />
@@ -106,6 +110,15 @@ const Footer = () => {
                   </Link>
                 </li>
               ))}
+              <div className="pt-4 mt-4 border-t border-white/5">
+                {footerLinks.support.map((link) => (
+                  <li key={link.name} className="mt-2">
+                    <Link href={link.href} className="text-white/30 hover:text-white transition-colors duration-200 text-xs flex items-center group">
+                      {link.name}
+                    </Link>
+                  </li>
+                ))}
+              </div>
             </ul>
           </div>
 
