@@ -25,10 +25,6 @@ const Footer = () => {
       { name: 'Challenges', href: '/challenge' },
       { name: 'Astro', href: '/astro' },
       { name: 'Fashion', href: '/fashion' },
-    ],
-    support: [
-      { name: 'Help Center', href: '/help' },
-      { name: 'Contact Us', href: '/contact' },
     ]
   };
 
@@ -110,15 +106,6 @@ const Footer = () => {
                   </Link>
                 </li>
               ))}
-              <div className="pt-4 mt-4 border-t border-white/5">
-                {footerLinks.support.map((link) => (
-                  <li key={link.name} className="mt-2">
-                    <Link href={link.href} className="text-white/30 hover:text-white transition-colors duration-200 text-xs flex items-center group">
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </div>
             </ul>
           </div>
 
